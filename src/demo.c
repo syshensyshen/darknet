@@ -7,7 +7,12 @@
 #include "box.h"
 #include "image.h"
 #include "demo.h"
+#ifdef _MSC_VER
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif // _MSC_VER
+
 
 #define DEMO 1
 

@@ -36,6 +36,10 @@
 #include "lstm_layer.h"
 #include "utils.h"
 
+#ifdef _MSC_VER
+//#define sscanf _sscanf
+#endif // _MSC_VER
+
 typedef struct{
     char *type;
     list *options;
@@ -129,6 +133,9 @@ typedef struct size_params{
 
 local_layer parse_local(list *options, size_params params)
 {
+#ifdef _MSC_VER
+	local_layer layer;
+#endif // _MSC_VER
     int n = option_find_int(options, "filters",1);
     int size = option_find_int(options, "size",1);
     int stride = option_find_int(options, "stride",1);
@@ -143,13 +150,20 @@ local_layer parse_local(list *options, size_params params)
     batch=params.batch;
     if(!(h && w && c)) error("Layer before local layer must output image.");
 
-    local_layer layer = make_local_layer(batch,h,w,c,n,size,stride,pad,activation);
-
+#ifdef _MSC_VER
+	layer = make_local_layer(batch, h, w, c, n, size, stride, pad, activation);
+#else
+	local_layer layer = make_local_layer(batch,h,w,c,n,size,stride,pad,activation);
+#endif // _MSC_VER
+    
     return layer;
 }
 
 layer parse_deconvolutional(list *options, size_params params)
 {
+#ifdef _MSC_VER
+	layer l;
+#endif // _MSC_VER
     int n = option_find_int(options, "filters",1);
     int size = option_find_int(options, "size",1);
     int stride = option_find_int(options, "stride",1);
@@ -168,7 +182,11 @@ layer parse_deconvolutional(list *options, size_params params)
     int padding = option_find_int_quiet(options, "padding",0);
     if(pad) padding = size/2;
 
-    layer l = make_deconvolutional_layer(batch,h,w,c,n,size,stride,padding, activation, batch_normalize, params.net->adam);
+#ifdef _MSC_VER
+	l = make_deconvolutional_layer(batch,h,w,c,n,size,stride,padding, activation, batch_normalize, params.net->adam);
+#else
+	layer l = make_deconvolutional_layer(batch,h,w,c,n,size,stride,padding, activation, batch_normalize, params.net->adam);
+#endif // _MSC_VER
 
     return l;
 }
@@ -452,6 +470,9 @@ crop_layer parse_crop(list *options, size_params params)
 
 layer parse_reorg(list *options, size_params params)
 {
+#ifdef _MSC_VER
+	layer layer;
+#endif // _MSC_VER
     int stride = option_find_int(options, "stride",1);
     int reverse = option_find_int_quiet(options, "reverse",0);
     int flatten = option_find_int_quiet(options, "flatten",0);
@@ -463,13 +484,20 @@ layer parse_reorg(list *options, size_params params)
     c = params.c;
     batch=params.batch;
     if(!(h && w && c)) error("Layer before reorg layer must output image.");
-
-    layer layer = make_reorg_layer(batch,w,h,c,stride,reverse, flatten, extra);
+#ifdef _MSC_VER
+	layer = make_reorg_layer(batch, w, h, c, stride, reverse, flatten, extra);
+#else
+	layer layer = make_reorg_layer(batch,w,h,c,stride,reverse, flatten, extra);
+#endif // _MSC_VER
+    
     return layer;
 }
 
 maxpool_layer parse_maxpool(list *options, size_params params)
 {
+#ifdef _MSC_VER
+	maxpool_layer layer;
+#endif // _MSC_VER
     int stride = option_find_int(options, "stride",1);
     int size = option_find_int(options, "size",stride);
     int padding = option_find_int_quiet(options, "padding", (size-1)/2);
@@ -481,12 +509,18 @@ maxpool_layer parse_maxpool(list *options, size_params params)
     batch=params.batch;
     if(!(h && w && c)) error("Layer before maxpool layer must output image.");
 
-    maxpool_layer layer = make_maxpool_layer(batch,h,w,c,size,stride,padding);
+#ifdef _MSC_VER
+	layer = make_maxpool_layer(batch, h, w, c, size, stride, padding);
+#else
+	maxpool_layer layer = make_maxpool_layer(batch,h,w,c,size,stride,padding);
+#endif // _MSC_VER
+    
     return layer;
 }
 
 avgpool_layer parse_avgpool(list *options, size_params params)
 {
+	avgpool_layer layer;
     int batch,w,h,c;
     w = params.w;
     h = params.h;
@@ -494,7 +528,7 @@ avgpool_layer parse_avgpool(list *options, size_params params)
     batch=params.batch;
     if(!(h && w && c)) error("Layer before avgpool layer must output image.");
 
-    avgpool_layer layer = make_avgpool_layer(batch,w,h,c);
+    layer = make_avgpool_layer(batch,w,h,c);
     return layer;
 }
 
@@ -729,10 +763,11 @@ int is_network(section *s)
 
 network *parse_network_cfg(char *filename)
 {
+	network *net = NULL;
     list *sections = read_cfg(filename);
     node *n = sections->front;
     if(!n) error("Config file has no sections");
-    network *net = make_network(sections->size - 1);
+    net = make_network(sections->size - 1);
     net->gpu_index = gpu_index;
     size_params params;
 

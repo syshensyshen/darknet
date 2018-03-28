@@ -129,6 +129,7 @@ void test_captcha(char *cfgfile, char *weightfile, char *filename)
 
 void valid_captcha(char *cfgfile, char *weightfile, char *filename)
 {
+	image im;
     char **labels = get_labels("/data/captcha/reimgs.labels.list");
     network *net = load_network(cfgfile, weightfile, 0);
     list *plist = get_paths("/data/captcha/reimgs.fg.list");
@@ -141,7 +142,7 @@ void valid_captcha(char *cfgfile, char *weightfile, char *filename)
     int i, j;
     for(i = 0; i < N; ++i){
         if (i%100 == 0) fprintf(stderr, "%d\n", i);
-        image im = load_image_color(paths[i], net->w, net->h);
+        im = load_image_color(paths[i], net->w, net->h);
         float *X = im.data;
         float *predictions = network_predict(net, X);
         //printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));

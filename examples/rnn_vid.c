@@ -16,7 +16,7 @@ float_pair get_rnn_vid_data(network net, char **files, int n, int batch, int ste
 {
     int b;
     assert(net.batch == steps + 1);
-    image out_im = get_network_image(net);
+    image out_im = get_network_image(&net);
     int output_size = out_im.w*out_im.h*out_im.c;
     printf("%d %d %d\n", out_im.w, out_im.h, out_im.c);
     float *feats = calloc(net.batch*batch*output_size, sizeof(float));
@@ -48,7 +48,7 @@ float_pair get_rnn_vid_data(network net, char **files, int n, int batch, int ste
             free_image(im);
             free_image(re);
         }
-        float *output = network_predict(net, input);
+        float *output = network_predict(&net, input);
 
         free(input);
 
@@ -76,32 +76,32 @@ void train_vid_rnn(char *cfgfile, char *weightfile)
     char *base = basecfg(cfgfile);
     printf("%s\n", base);
     float avg_loss = -1;
-    network net = parse_network_cfg(cfgfile);
+    network *net = parse_network_cfg(cfgfile);
     if(weightfile){
         load_weights(&net, weightfile);
     }
-    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
-    int imgs = net.batch*net.subdivisions;
-    int i = *net.seen/imgs;
+    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
+    int imgs = net->batch*net->subdivisions;
+    int i = *net->seen/imgs;
 
     list *plist = get_paths(train_videos);
     int N = plist->size;
     char **paths = (char **)list_to_array(plist);
     clock_t time;
-    int steps = net.time_steps;
-    int batch = net.batch / net.time_steps;
+    int steps = net->time_steps;
+    int batch = net->batch / net->time_steps;
 
-    network extractor = parse_network_cfg("cfg/extractor.cfg");
-    load_weights(&extractor, "/home/pjreddie/trained/yolo-coco.conv");
+    network *extractor = parse_network_cfg("cfg/extractor.cfg");
+    load_weights(extractor, "/home/pjreddie/trained/yolo-coco.conv");
 
-    while(get_current_batch(net) < net.max_batches){
+    while(get_current_batch(net) < net->max_batches){
         i += 1;
         time=clock();
-        float_pair p = get_rnn_vid_data(extractor, paths, N, batch, steps);
+        float_pair p = get_rnn_vid_data(*extractor, paths, N, batch, steps);
 
-        copy_cpu(net.inputs*net.batch, p.x, 1, net.input, 1);
-        copy_cpu(net.truths*net.batch, p.y, 1, net.truth, 1);
-        float loss = train_network_datum(net) / (net.batch);
+        copy_cpu(net->inputs*net->batch, p.x, 1, net->input, 1);
+        copy_cpu(net->truths*net->batch, p.y, 1, net->truth, 1);
+        float loss = train_network_datum(net) / (net->batch);
 
 
         free(p.x);
@@ -146,24 +146,24 @@ image save_reconstruction(network net, image *init, float *feat, char *name, int
 
 void generate_vid_rnn(char *cfgfile, char *weightfile)
 {
-    network extractor = parse_network_cfg("cfg/extractor.recon.cfg");
+    network *extractor = parse_network_cfg("cfg/extractor.recon.cfg");
     load_weights(&extractor, "/home/pjreddie/trained/yolo-coco.conv");
 
-    network net = parse_network_cfg(cfgfile);
+    network *net = parse_network_cfg(cfgfile);
     if(weightfile){
-        load_weights(&net, weightfile);
+        load_weights(net, weightfile);
     }
-    set_batch_network(&extractor, 1);
-    set_batch_network(&net, 1);
+    set_batch_network(extractor, 1);
+    set_batch_network(net, 1);
 
     int i;
     CvCapture *cap = cvCaptureFromFile("/extra/vid/ILSVRC2015/Data/VID/snippets/val/ILSVRC2015_val_00007030.mp4");
-    float *feat;
-    float *next;
+    float *feat = NULL;
+    float *next = NULL;
     image last;
     for(i = 0; i < 25; ++i){
         image im = get_image_from_stream(cap);
-        image re = resize_image(im, extractor.w, extractor.h);
+        image re = resize_image(im, extractor->w, extractor->h);
         feat = network_predict(extractor, re.data);
         if(i > 0){
             printf("%f %f\n", mean_array(feat, 14*14*512), variance_array(feat, 14*14*512));
@@ -176,14 +176,14 @@ void generate_vid_rnn(char *cfgfile, char *weightfile)
 
         free_image(im);
 
-        free_image(save_reconstruction(extractor, 0, feat, "feat", i));
-        free_image(save_reconstruction(extractor, 0, next, "next", i));
+        free_image(save_reconstruction(*extractor, 0, feat, "feat", i));
+        free_image(save_reconstruction(*extractor, 0, next, "next", i));
         if (i==24) last = copy_image(re);
         free_image(re);
     }
     for(i = 0; i < 30; ++i){
         next = network_predict(net, next);
-        image new = save_reconstruction(extractor, &last, next, "new", i);
+        image new = save_reconstruction(*extractor, &last, next, "new", i);
         free_image(last);
         last = new;
     }

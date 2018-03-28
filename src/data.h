@@ -8,6 +8,11 @@
 #include "image.h"
 #include "tree.h"
 
+
+#ifdef _MSC_VER
+#define inline __inline
+#endif // _MSC_VER
+
 static inline float distance_from_edge(int x, int max)
 {
     int dx = (max/2) - x;

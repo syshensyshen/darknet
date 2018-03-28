@@ -3,28 +3,34 @@
 void train_writing(char *cfgfile, char *weightfile)
 {
     char *backup_directory = "/home/pjreddie/backup/";
-    srand(time(0));
+#ifdef _MSC_VER
+	srand(clock());
+#else
+	srand(time(0));
+#endif // _MSC_VER
+    
+	image out;
     float avg_loss = -1;
     char *base = basecfg(cfgfile);
     printf("%s\n", base);
-    network net = parse_network_cfg(cfgfile);
+    network *net = parse_network_cfg(cfgfile);
     if(weightfile){
-        load_weights(&net, weightfile);
+        load_weights(net, weightfile);
     }
-    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
-    int imgs = net.batch*net.subdivisions;
+    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
+    int imgs = net->batch*net->subdivisions;
     list *plist = get_paths("figures.list");
     char **paths = (char **)list_to_array(plist);
     clock_t time;
     int N = plist->size;
     printf("N: %d\n", N);
-    image out = get_network_image(net);
+    out = get_network_image(net);
 
     data train, buffer;
 
     load_args args = {0};
-    args.w = net.w;
-    args.h = net.h;
+    args.w = net->w;
+    args.h = net->h;
     args.out_w = out.w;
     args.out_h = out.h;
     args.paths = paths;
@@ -34,8 +40,8 @@ void train_writing(char *cfgfile, char *weightfile)
     args.type = WRITING_DATA;
 
     pthread_t load_thread = load_data_in_thread(args);
-    int epoch = (*net.seen)/N;
-    while(get_current_batch(net) < net.max_batches || net.max_batches == 0){
+    int epoch = (*net->seen)/N;
+    while(get_current_batch(net) < net->max_batches || net->max_batches == 0){
         time=clock();
         pthread_join(load_thread, 0);
         train = buffer;
@@ -63,15 +69,15 @@ void train_writing(char *cfgfile, char *weightfile)
 
         if(avg_loss == -1) avg_loss = loss;
         avg_loss = avg_loss*.9 + loss*.1;
-        printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net.seen)/N, loss, avg_loss, get_current_rate(net), sec(clock()-time), *net.seen);
+        printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net->seen)/N, loss, avg_loss, get_current_rate(net), sec(clock()-time), *net->seen);
         free_data(train);
         if(get_current_batch(net)%100 == 0){
             char buff[256];
             sprintf(buff, "%s/%s_batch_%ld.weights", backup_directory, base, get_current_batch(net));
             save_weights(net, buff);
         }
-        if(*net.seen/N > epoch){
-            epoch = *net.seen/N;
+        if(*net->seen/N > epoch){
+            epoch = *net->seen/N;
             char buff[256];
             sprintf(buff, "%s/%s_%d.weights",backup_directory,base, epoch);
             save_weights(net, buff);
@@ -81,11 +87,11 @@ void train_writing(char *cfgfile, char *weightfile)
 
 void test_writing(char *cfgfile, char *weightfile, char *filename)
 {
-    network net = parse_network_cfg(cfgfile);
+    network *net = parse_network_cfg(cfgfile);
     if(weightfile){
-        load_weights(&net, weightfile);
+        load_weights(net, weightfile);
     }
-    set_batch_network(&net, 1);
+    set_batch_network(net, 1);
     srand(2222222);
     clock_t time;
     char buff[256];
@@ -102,7 +108,7 @@ void test_writing(char *cfgfile, char *weightfile, char *filename)
         }
 
         image im = load_image_color(input, 0, 0);
-        resize_network(&net, im.w, im.h);
+        resize_network(net, im.w, im.h);
         printf("%d %d %d\n", im.h, im.w, im.c);
         float *X = im.data;
         time=clock();

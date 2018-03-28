@@ -1,0 +1,131 @@
+﻿Build started 2018/3/27 19:04:29.
+     1>Project "E:\code\darknet-master\windows\yolo\yolo\yolo.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include" /Zi /nologo /W3 /WX- /sdl /Od /D _CONSOLE /D GPU /D OPENCV /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TC /errorReport:prompt ..\..\..\src\parser.c
+         parser.c
+     1>D:\opencv3.1.0\opencv\build\include\opencv2/core/types_c.h(929): warning C4013: 'cvRound' undefined; assuming extern returning int
+     1>e:\code\darknet-master\src\activations.h(25): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(26): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(27): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(36): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(37): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(39): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(40): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(41): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(42): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(43): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(46): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(47): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(48): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(53): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(54): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(60): warning C4305: 'return' : truncation from 'double' to 'float'
+     1>e:\code\darknet-master\src\activations.h(72): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(80): warning C4244: 'return' : conversion from 'int' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(82): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(83): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(84): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>e:\code\darknet-master\src\activations.h(86): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\..\src\parser.c(296): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(304): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(333): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(344): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(351): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\..\src\parser.c(374): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(396): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(403): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\..\src\parser.c(429): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(547): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(626): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(680): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(681): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(682): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(693): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(694): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(695): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>..\..\..\src\parser.c(729): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>..\..\..\src\parser.c(739): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"E:\code\darknet-master\windows\yolo\x64\Debug\yolo.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64" opencv_world310d.lib pthreadVC2.lib cublas.lib cuda.lib curand.lib cudart.lib cudnn.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\code\darknet-master\windows\yolo\x64\Debug\yolo.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\code\darknet-master\windows\yolo\x64\Debug\yolo.lib" /MACHINE:X64 x64\Debug\activation_kernels.cu.obj
+         x64\Debug\avgpool_layer_kernels.cu.obj
+         x64\Debug\blas_kernels.cu.obj
+         x64\Debug\col2im_kernels.cu.obj
+         x64\Debug\convolutional_kernels.cu.obj
+         x64\Debug\crop_layer_kernels.cu.obj
+         x64\Debug\deconvolutional_kernels.cu.obj
+         x64\Debug\dropout_layer_kernels.cu.obj
+         x64\Debug\im2col_kernels.cu.obj
+         x64\Debug\maxpool_layer_kernels.cu.obj
+         x64\Debug\art.obj
+         x64\Debug\attention.obj
+         x64\Debug\captcha.obj
+         x64\Debug\cifar.obj
+         x64\Debug\classifier.obj
+         x64\Debug\coco.obj
+         x64\Debug\darknet.obj
+         x64\Debug\detector.obj
+         x64\Debug\dice.obj
+         x64\Debug\go.obj
+         x64\Debug\lsd.obj
+         x64\Debug\nightmare.obj
+         x64\Debug\regressor.obj
+         x64\Debug\rnn.obj
+         x64\Debug\rnn_vid.obj
+         x64\Debug\segmenter.obj
+         x64\Debug\super.obj
+         x64\Debug\swag.obj
+         x64\Debug\tag.obj
+         x64\Debug\voxel.obj
+         x64\Debug\writing.obj
+         x64\Debug\yolo.obj
+         x64\Debug\activations.obj
+         x64\Debug\activation_layer.obj
+         x64\Debug\avgpool_layer.obj
+         x64\Debug\batchnorm_layer.obj
+         x64\Debug\blas.obj
+         x64\Debug\box.obj
+         x64\Debug\col2im.obj
+         x64\Debug\compare.obj
+         x64\Debug\connected_layer.obj
+         x64\Debug\convolutional_layer.obj
+         x64\Debug\cost_layer.obj
+         x64\Debug\crnn_layer.obj
+         x64\Debug\crop_layer.obj
+         x64\Debug\cuda.obj
+         x64\Debug\data.obj
+         x64\Debug\deconvolutional_layer.obj
+         x64\Debug\demo.obj
+         x64\Debug\detection_layer.obj
+         x64\Debug\dropout_layer.obj
+         x64\Debug\gemm.obj
+         x64\Debug\gru_layer.obj
+         x64\Debug\im2col.obj
+         x64\Debug\image.obj
+         x64\Debug\l2norm_layer.obj
+         x64\Debug\layer.obj
+         x64\Debug\list.obj
+         x64\Debug\local_layer.obj
+         x64\Debug\logistic_layer.obj
+         x64\Debug\lstm_layer.obj
+         x64\Debug\matrix.obj
+         x64\Debug\maxpool_layer.obj
+         x64\Debug\network.obj
+         x64\Debug\normalization_layer.obj
+         x64\Debug\option_list.obj
+         x64\Debug\parser.obj
+         x64\Debug\region_layer.obj
+         x64\Debug\reorg_layer.obj
+         x64\Debug\rnn_layer.obj
+         x64\Debug\route_layer.obj
+         x64\Debug\shortcut_layer.obj
+         x64\Debug\softmax_layer.obj
+         x64\Debug\tree.obj
+         x64\Debug\upsample_layer.obj
+         x64\Debug\utils.obj
+         x64\Debug\yolo_layer.obj
+         yolo.vcxproj -> E:\code\darknet-master\windows\yolo\x64\Debug\yolo.exe
+     1>Done Building Project "E:\code\darknet-master\windows\yolo\yolo\yolo.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.33

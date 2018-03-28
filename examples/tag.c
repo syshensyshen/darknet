@@ -1,5 +1,9 @@
 #include "darknet.h"
 
+#ifdef _MSC_VER
+//#define sprintf _sprintf
+#endif // _MSC_VER
+
 void train_tag(char *cfgfile, char *weightfile, int clear)
 {
     srand(time(0));

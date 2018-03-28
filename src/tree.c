@@ -4,6 +4,11 @@
 #include "utils.h"
 #include "data.h"
 
+// #ifdef _MSC_VER
+// #define fopen _fopen
+// #define sscanf sscanf_s
+// #endif // _MSC_VER
+
 void change_leaves(tree *t, char *leaf_list)
 {
     list *llist = get_paths(leaf_list);

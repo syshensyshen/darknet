@@ -32,6 +32,10 @@
 #include "parser.h"
 #include "data.h"
 
+#ifdef _MSC_VER
+//#define sprintf _sprintf
+#endif // _MSC_VER
+
 load_args get_base_args(network *net)
 {
     load_args args = {0};
@@ -525,11 +529,12 @@ int num_detections(network *net, float thresh)
 
 detection *make_network_boxes(network *net, float thresh, int *num)
 {
+	detection *dets = NULL;
     layer l = net->layers[net->n - 1];
     int i;
     int nboxes = num_detections(net, thresh);
     if(num) *num = nboxes;
-    detection *dets = calloc(nboxes, sizeof(detection));
+    dets = calloc(nboxes, sizeof(detection));
     for(i = 0; i < nboxes; ++i){
         dets[i].prob = calloc(l.classes, sizeof(float));
         if(l.coords > 4){

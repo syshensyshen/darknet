@@ -1,6 +1,10 @@
 #include "darknet.h"
 
+#ifdef _MSC_VER
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif // _MSC_VER
 #include <assert.h>
 
 void extend_data_truth(data *d, int n, float val)

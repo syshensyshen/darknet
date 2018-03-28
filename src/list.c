@@ -26,8 +26,9 @@ void transfer_node(list *s, list *d, node *n)
 */
 
 void *list_pop(list *l){
+	node *b = NULL;
     if(!l->back) return 0;
-    node *b = l->back;
+    b = l->back;
     void *val = b->val;
     l->back = b->prev;
     if(l->back) l->back->next = 0;

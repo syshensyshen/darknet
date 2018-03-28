@@ -9,12 +9,17 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+#ifdef _MSC_VER
+//#define fopen _fopen
+#endif // _MSC_VER
+
 list *get_paths(char *filename)
 {
+	list *lines = NULL;
     char *path;
     FILE *file = fopen(filename, "r");
     if(!file) file_error(filename);
-    list *lines = make_list();
+    lines = make_list();
     while((path=fgetl(file))){
         list_insert(lines, path);
     }
@@ -375,12 +380,13 @@ void fill_truth_iseg(char *path, int num_boxes, float *truth, int classes, int w
     int i = 0;
     image part = make_image(w, h, 1);
     while((fscanf(file, "%d %s", &id, buff) == 2) && i < num_boxes){
+		box b;
         int n = 0;
         int *rle = read_intlist(buff, &n, 0);
         load_rle(part, rle, n);
         image sized = rotate_crop_image(part, aug.rad, aug.scale, aug.w, aug.h, aug.dx, aug.dy, aug.aspect);
         if(flip) flip_image(sized);
-        box b = bound_image(sized);
+        b = bound_image(sized);
         if(b.w > 0){
             image crop = crop_image(sized, b.x, b.y, b.w, b.h);
             image mask = resize_image(crop, mw, mh);
@@ -476,8 +482,9 @@ void fill_truth_captcha(char *path, int n, float *truth)
 
 data load_data_captcha(char **paths, int n, int m, int k, int w, int h)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
     d.X = load_image_paths(paths, n, w, h);
     d.y = make_matrix(n, k*NUMCHARS);
@@ -491,8 +498,9 @@ data load_data_captcha(char **paths, int n, int m, int k, int w, int h)
 
 data load_data_captcha_encode(char **paths, int n, int m, int w, int h)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
     d.X = load_image_paths(paths, n, w, h);
     d.X.cols = 17100;
@@ -1062,9 +1070,10 @@ pthread_t load_data_in_thread(load_args args)
 void *load_threads(void *ptr)
 {
     int i;
+	data *out = NULL;
     load_args args = *(load_args *)ptr;
     if (args.threads == 0) args.threads = 1;
-    data *out = args.d;
+    out = args.d;
     int total = args.n;
     free(ptr);
     data *buffers = calloc(args.threads, sizeof(data));
@@ -1121,8 +1130,9 @@ data load_data_writing(char **paths, int n, int m, int w, int h, int out_w, int 
 
 data load_data_old(char **paths, int n, int m, char **labels, int k, int w, int h)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
     d.X = load_image_paths(paths, n, w, h);
     d.y = load_labels_paths(paths, n, labels, k, 0);
@@ -1146,8 +1156,10 @@ data load_data_old(char **paths, int n, int m, char **labels, int k, int w, int 
 
 data load_data_super(char **paths, int n, int m, int w, int h, int scale)
 {
+	image im, crop, resize;
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
 
     int i;
@@ -1160,11 +1172,11 @@ data load_data_super(char **paths, int n, int m, int w, int h, int scale)
     d.y.cols = w*scale * h*scale * 3;
 
     for(i = 0; i < n; ++i){
-        image im = load_image_color(paths[i], 0, 0);
-        image crop = random_crop_image(im, w*scale, h*scale);
+        im = load_image_color(paths[i], 0, 0);
+        crop = random_crop_image(im, w*scale, h*scale);
         int flip = rand()%2;
         if (flip) flip_image(crop);
-        image resize = resize_image(crop, w, h);
+        resize = resize_image(crop, w, h);
         d.X.vals[i] = resize.data;
         d.y.vals[i] = crop.data;
         free_image(im);
@@ -1176,8 +1188,9 @@ data load_data_super(char **paths, int n, int m, int w, int h, int scale)
 
 data load_data_regression(char **paths, int n, int m, int k, int min, int max, int size, float angle, float aspect, float hue, float saturation, float exposure)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
     d.X = load_image_augment_paths(paths, n, min, max, size, angle, aspect, hue, saturation, exposure, 0);
     d.y = load_regression_labels_paths(paths, n, k);
@@ -1257,8 +1270,9 @@ data resize_data(data orig, int w, int h)
 
 data load_data_augment(char **paths, int n, int m, char **labels, int k, tree *hierarchy, int min, int max, int size, float angle, float aspect, float hue, float saturation, float exposure, int center)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.shallow = 0;
     d.w=size;
     d.h=size;
@@ -1270,8 +1284,9 @@ data load_data_augment(char **paths, int n, int m, char **labels, int k, tree *h
 
 data load_data_tag(char **paths, int n, int m, int k, int min, int max, int size, float angle, float aspect, float hue, float saturation, float exposure)
 {
+	data d = { 0 };
     if(m) paths = get_random_paths(paths, n, m);
-    data d = {0};
+    
     d.w = size;
     d.h = size;
     d.shallow = 0;

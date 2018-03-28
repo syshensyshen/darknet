@@ -2,11 +2,19 @@
 
 #include <assert.h>
 #include <math.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
+
 
 int inverted = 1;
 int noi = 1;
+#ifdef _MSC_VER
+#define nind 10
+#else
 static const int nind = 10;
+#endif // _MSC_VER
+
 int legal_go(float *b, float *ko, int p, int r, int c);
 int check_ko(float *x, float *ko);
 
@@ -17,8 +25,9 @@ typedef struct {
 
 char *fgetgo(FILE *fp)
 {
+	size_t size = 96;
     if(feof(fp)) return 0;
-    size_t size = 96;
+    
     char *line = malloc(size*sizeof(char));
     if(size != fread(line, sizeof(char), size, fp)){
         free(line);
@@ -783,7 +792,7 @@ int print_game(float *board, FILE *fp)
 
 int stdin_ready()
 {
-    fd_set readfds;
+    /*fd_set readfds;
     FD_ZERO(&readfds);
 
     struct timeval timeout;
@@ -793,7 +802,7 @@ int stdin_ready()
 
     if (select(1, &readfds, NULL, NULL, &timeout)){
         return 1;
-    }
+    }*/
     return 0;
 }
 
@@ -1050,7 +1059,7 @@ void engine_go(char *filename, char *weightfile, int mcts_iters, float secs, flo
                 int count = print_game(board, f);
                 fprintf(f, "%s final_status_list dead\n", ids);
                 fclose(f);
-                FILE *p = popen("./gnugo --mode gtp < game.txt", "r");
+                FILE *p = open("./gnugo --mode gtp < game.txt", "r");
                 for(i = 0; i < count; ++i){
                     free(fgetl(p));
                     free(fgetl(p));
@@ -1074,7 +1083,7 @@ void engine_go(char *filename, char *weightfile, int mcts_iters, float secs, flo
             int count = print_game(board, f);
             fprintf(f, "%s kgs-genmove_cleanup %s\n", ids, type);
             fclose(f);
-            FILE *p = popen("./gnugo --mode gtp < game.txt", "r");
+            FILE *p = open("./gnugo --mode gtp < game.txt", "r");
             for(i = 0; i < count; ++i){
                 free(fgetl(p));
                 free(fgetl(p));
@@ -1191,7 +1200,7 @@ float score_game(float *board)
     int count = print_game(board, f);
     fprintf(f, "final_score\n");
     fclose(f);
-    FILE *p = popen("./gnugo --mode gtp < game.txt", "r");
+    FILE *p = open("./gnugo --mode gtp < game.txt", "r");
     for(i = 0; i < count; ++i){
         free(fgetl(p));
         free(fgetl(p));
@@ -1206,7 +1215,7 @@ float score_game(float *board)
         if (n == 2) break;
     }
     if(player == 'W') score = -score;
-    pclose(p);
+    close(p);
     return score;
 }
 
@@ -1253,7 +1262,7 @@ void self_go(char *filename, char *weightfile, char *f2, char *w2, int multi)
             else ++p2;
             ++total;
             fprintf(stderr, "Total: %d, Player 1: %f, Player 2: %f\n", total, (float)p1/total, (float)p2/total);
-            sleep(1);
+            //sleep(1);
             /*
                int i = (score > 0)? 0 : 1;
                int j;

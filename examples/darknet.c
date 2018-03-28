@@ -115,8 +115,9 @@ long numops(network *net)
 
 void speed(char *cfgfile, int tics)
 {
+	network *net = NULL;
     if (tics == 0) tics = 1000;
-    network *net = parse_network_cfg(cfgfile);
+    net = parse_network_cfg(cfgfile);
     set_batch_network(net, 1);
     int i;
     double time=what_time_is_it_now();

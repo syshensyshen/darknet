@@ -132,10 +132,11 @@ float *pop_column(matrix *m, int c)
 
 matrix csv_to_matrix(char *filename)
 {
+	matrix m;
+
     FILE *fp = fopen(filename, "r");
     if(!fp) file_error(filename);
-
-    matrix m;
+    
     m.cols = -1;
 
     char *line;

@@ -4,6 +4,10 @@
 #include "cuda.h"
 #include "math.h"
 
+#ifdef _MSC_VER
+#define inline __inline
+#endif // _MSC_VER
+
 ACTIVATION get_activation(char *s);
 
 char *get_activation_string(ACTIVATION a);

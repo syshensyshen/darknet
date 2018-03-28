@@ -1,5 +1,9 @@
 #include "darknet.h"
 
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
+
 static int coco_ids[] = {1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90};
 
 
@@ -234,6 +238,9 @@ void print_imagenet_detections(FILE *fp, int id, detection *dets, int total, int
 void validate_detector_flip(char *datacfg, char *cfgfile, char *weightfile, char *outfile)
 {
     int j;
+	network *net = NULL;
+	layer l;
+	list *plist = NULL;
     list *options = read_data_cfg(datacfg);
     char *valid_images = option_find_str(options, "valid", "data/train.list");
     char *name_list = option_find_str(options, "names", "data/names.list");
@@ -243,15 +250,15 @@ void validate_detector_flip(char *datacfg, char *cfgfile, char *weightfile, char
     int *map = 0;
     if (mapf) map = read_map(mapf);
 
-    network *net = load_network(cfgfile, weightfile, 0);
+    net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 2);
     fprintf(stderr, "Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
     srand(time(0));
 
-    list *plist = get_paths(valid_images);
+    plist = get_paths(valid_images);
     char **paths = (char **)list_to_array(plist);
 
-    layer l = net->layers[net->n-1];
+    l = net->layers[net->n-1];
     int classes = l.classes;
 
     char buff[1024];
@@ -364,6 +371,7 @@ void validate_detector_flip(char *datacfg, char *cfgfile, char *weightfile, char
 void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *outfile)
 {
     int j;
+	network *net = NULL;
     list *options = read_data_cfg(datacfg);
     char *valid_images = option_find_str(options, "valid", "data/train.list");
     char *name_list = option_find_str(options, "names", "data/names.list");
@@ -373,7 +381,7 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
     int *map = 0;
     if (mapf) map = read_map(mapf);
 
-    network *net = load_network(cfgfile, weightfile, 0);
+    net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
     fprintf(stderr, "Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
     srand(time(0));

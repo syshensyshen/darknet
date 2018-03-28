@@ -121,8 +121,9 @@ image border_image(image a, int border)
 
 image tile_images(image a, image b, int dx)
 {
+	image c;
     if(a.w == 0) return copy_image(b);
-    image c = make_image(a.w + b.w + dx, (a.h > b.h) ? a.h : b.h, (a.c > b.c) ? a.c : b.c);
+    c = make_image(a.w + b.w + dx, (a.h > b.h) ? a.h : b.h, (a.c > b.c) ? a.c : b.c);
     fill_cpu(c.w*c.h*c.c, 1, c.data, 1);
     embed_image(a, c, 0, 0); 
     composite_image(b, c, a.w + dx, 0);
@@ -131,9 +132,10 @@ image tile_images(image a, image b, int dx)
 
 image get_label(image **characters, char *string, int size)
 {
+	image label;
     size = size/10;
     if(size > 7) size = 7;
-    image label = make_empty_image(0,0,0);
+    label = make_empty_image(0,0,0);
     while(*string){
         image l = characters[size][(int)*string];
         image n = tile_images(label, l, -size - 1 + (size+1)/2);
@@ -653,9 +655,10 @@ void flush_stream_buffer(CvCapture *cap, int n)
 
 image get_image_from_stream(CvCapture *cap)
 {
+	image im;
     IplImage* src = cvQueryFrame(cap);
     if (!src) return make_empty_image(0,0,0);
-    image im = ipl_to_image(src);
+    im = ipl_to_image(src);
     rgbgr_image(im);
     return im;
 }
@@ -908,18 +911,19 @@ int best_3d_shift(image a, image b, int min, int max)
 
 void composite_3d(char *f1, char *f2, char *out, int delta)
 {
+	image a, b, c1, c2, swap, c;
     if(!out) out = "out";
-    image a = load_image(f1, 0,0,0);
-    image b = load_image(f2, 0,0,0);
+    a = load_image(f1, 0,0,0);
+    b = load_image(f2, 0,0,0);
     int shift = best_3d_shift_r(a, b, -a.h/100, a.h/100);
 
-    image c1 = crop_image(b, 10, shift, b.w, b.h);
+    c1 = crop_image(b, 10, shift, b.w, b.h);
     float d1 = dist_array(c1.data, a.data, a.w*a.h*a.c, 100);
-    image c2 = crop_image(b, -10, shift, b.w, b.h);
+    c2 = crop_image(b, -10, shift, b.w, b.h);
     float d2 = dist_array(c2.data, a.data, a.w*a.h*a.c, 100);
 
     if(d2 < d1 && 0){
-        image swap = a;
+        swap = a;
         a = b;
         b = swap;
         shift = -shift;
@@ -929,7 +933,7 @@ void composite_3d(char *f1, char *f2, char *out, int delta)
         printf("%d\n", shift);
     }
 
-    image c = crop_image(b, delta, shift, a.w, a.h);
+    c = crop_image(b, delta, shift, a.w, a.h);
     int i;
     for(i = 0; i < c.w*c.h; ++i){
         c.data[i] = a.data[i];
@@ -980,6 +984,7 @@ image letterbox_image(image im, int w, int h)
 
 image resize_max(image im, int max)
 {
+	image resized;
     int w = im.w;
     int h = im.h;
     if(w > h){
@@ -990,12 +995,13 @@ image resize_max(image im, int max)
         h = max;
     }
     if(w == im.w && h == im.h) return im;
-    image resized = resize_image(im, w, h);
+    resized = resize_image(im, w, h);
     return resized;
 }
 
 image resize_min(image im, int min)
 {
+	image resized;
     int w = im.w;
     int h = im.h;
     if(w < h){
@@ -1006,15 +1012,16 @@ image resize_min(image im, int min)
         h = min;
     }
     if(w == im.w && h == im.h) return im;
-    image resized = resize_image(im, w, h);
+    resized = resize_image(im, w, h);
     return resized;
 }
 
 image random_crop_image(image im, int w, int h)
 {
+	image crop;
     int dx = rand_int(0, im.w - w);
     int dy = rand_int(0, im.h - h);
-    image crop = crop_image(im, dx, dy, w, h);
+    crop = crop_image(im, dx, dy, w, h);
     return crop;
 }
 

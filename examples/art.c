@@ -1,6 +1,10 @@
 #include "darknet.h"
 
+#ifdef _MSC_VER
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif // _MSC_VER
 
 void demo_art(char *cfgfile, char *weightfile, int cam_index)
 {

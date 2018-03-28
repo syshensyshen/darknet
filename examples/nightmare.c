@@ -27,6 +27,7 @@ void calculate_loss(float *output, float *delta, int n, float thresh)
 
 void optimize_picture(network *net, image orig, int max_layer, float scale, float rate, float thresh, int norm)
 {
+	image resized, crop, im, out, delta, gray;
     //scale_image(orig, 2);
     //translate_image(orig, -1);
     net->n = max_layer + 1;
@@ -35,15 +36,15 @@ void optimize_picture(network *net, image orig, int max_layer, float scale, floa
     int dy = rand()%16 - 8;
     int flip = rand()%2;
 
-    image crop = crop_image(orig, dx, dy, orig.w, orig.h);
-    image im = resize_image(crop, (int)(orig.w * scale), (int)(orig.h * scale));
+    crop = crop_image(orig, dx, dy, orig.w, orig.h);
+    im = resize_image(crop, (int)(orig.w * scale), (int)(orig.h * scale));
     if(flip) flip_image(im);
 
     resize_network(net, im.w, im.h);
     layer last = net->layers[net->n-1];
     //net->layers[net->n - 1].activation = LINEAR;
 
-    image delta = make_image(im.w, im.h, im.c);
+    delta = make_image(im.w, im.h, im.c);
 
 #ifdef GPU
     net->delta_gpu = cuda_make_array(delta.data, im.w*im.h*im.c);
@@ -73,8 +74,8 @@ void optimize_picture(network *net, image orig, int max_layer, float scale, floa
 
     if(flip) flip_image(delta);
     //normalize_array(delta.data, delta.w*delta.h*delta.c);
-    image resized = resize_image(delta, orig.w, orig.h);
-    image out = crop_image(resized, -dx, -dy, orig.w, orig.h);
+    resized = resize_image(delta, orig.w, orig.h);
+    out = crop_image(resized, -dx, -dy, orig.w, orig.h);
 
     /*
        image g = grayscale_image(out);
@@ -83,7 +84,7 @@ void optimize_picture(network *net, image orig, int max_layer, float scale, floa
      */
 
     //rate = rate / abs_mean(out.data, out.w*out.h*out.c);
-    image gray = make_image(out.w, out.h, out.c);
+    gray = make_image(out.w, out.h, out.c);
     fill_image(gray, .5);
     axpy_cpu(orig.w*orig.h*orig.c, -1, orig.data, 1, gray.data, 1);
     axpy_cpu(orig.w*orig.h*orig.c, .1, gray.data, 1, out.data, 1);

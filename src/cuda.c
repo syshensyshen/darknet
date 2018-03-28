@@ -9,6 +9,10 @@ int gpu_index = 0;
 #include <stdlib.h>
 #include <time.h>
 
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
+
 void cuda_set_device(int n)
 {
     gpu_index = n;
